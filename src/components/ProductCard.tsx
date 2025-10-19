@@ -13,7 +13,7 @@ const ProductCard = function ({product}: Props) {
             <h2 className="text-xl font-semibold">{product.title}</h2>
         </div>
         <div className="max-h-18 overflow-hidden flex-1 mb-4">
-            <p className="text-normal line-clamp-3 overflow-hidden text-neutral-500">{product.description}</p>
+            <p className="text-base line-clamp-3 overflow-hidden text-neutral-500">{product.description}</p>
         </div>
         <div className="flex items-center justify-between">
             <p className="text-xl font-semibold">${product.price}</p>

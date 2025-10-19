@@ -4,8 +4,9 @@ import ProductCard from "../components/ProductCard.tsx";
 import Sort from "../components/Sort/Sort.tsx";
 import useSortedProducts from "../hooks/useSortedProducts.ts";
 import {useState} from "react";
-import AccentButton from "../components/AccentButton.tsx";
+import AccentButton from "../components/Buttons/AccentButton.tsx";
 import ModalWindow from "../components/ModalWindow.tsx";
+import AddProductForm from "../components/AddProductForm.tsx";
 
 function Index() {
     const {data, error, isLoading} = useGetProductsQuery();
@@ -38,7 +39,7 @@ function Index() {
             {sortedData.map((product) => (<ProductCard key={product.id} product={product}/>))}
         </div>
         <ModalWindow isOpened={productCreateModalActive} setOpened={setProductCreateModalActive}>
-            test
+            <AddProductForm onCancel={() => setProductCreateModalActive(false)}/>
         </ModalWindow>
     </section>
 }

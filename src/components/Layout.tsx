@@ -1,11 +1,11 @@
 import {Outlet} from "react-router";
 
 function Layout() {
-    return <div>
+    return <div className="flex flex-col min-h-[100vh]">
         <header>
 
         </header>
-        <main className="container mx-auto">
+        <main className="container mx-auto flex-1 flex flex-col justify-center">
             <Outlet></Outlet>
         </main>
         <footer>
