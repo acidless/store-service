@@ -8,8 +8,22 @@ export const productsAPI = createApi({
     }),
     endpoints: (builder) => ({
         getProducts: builder.query<Product[], void>({
-            query: () => "products"
+            query: () => "products",
+            transformResponse: (response: Product[]) => {
+                return response.map((item) => ({
+                    ...item,
+                    category: item.category[0].toUpperCase() + item.category.slice(1)
+                }));
+            },
         }),
+
+        getCategories: builder.query<string[], void>({
+            query: () => "products/categories",
+            transformResponse: (response: string[]) => {
+                return response.map((item) => item[0].toUpperCase() + item.slice(1));
+            },
+        }),
+
         addProduct: builder.mutation<Product, Partial<Product>>({
             query: (product) => ({
                 url: "products",
@@ -37,4 +51,4 @@ export const productsAPI = createApi({
     })
 });
 
-export const {useGetProductsQuery, useAddProductMutation} = productsAPI;
+export const {useGetProductsQuery, useGetCategoriesQuery, useAddProductMutation} = productsAPI;

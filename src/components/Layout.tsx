@@ -1,7 +1,7 @@
 import {Outlet} from "react-router";
 import ErrorPopup from "./ErrorPopup.tsx";
 import {useContext} from "react";
-import ErrorContext from "./context.tsx";
+import ErrorContext from "../context.tsx";
 
 function Layout() {
     const {error} = useContext(ErrorContext);

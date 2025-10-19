@@ -1,13 +1,21 @@
 import {useGetProductsQuery} from "../store/products/productsAPI.ts";
 import Loader from "../components/Loader/Loader.tsx";
 import ProductCard from "../components/ProductCard.tsx";
-import Sort from "../components/Sort/Sort.tsx";
 import useSortedProducts from "../hooks/useSortedProducts.ts";
 import {useContext, useEffect, useState} from "react";
 import AccentButton from "../components/Buttons/AccentButton.tsx";
 import ModalWindow from "../components/ModalWindow.tsx";
 import AddProductForm from "../components/AddProductForm.tsx";
-import ErrorContext from "../components/context.tsx";
+import ErrorContext from "../context.tsx";
+import Select from "../components/Select.tsx";
+
+const sortingParams = [
+    {key: "default", text: "Default sort"},
+    {key: "price-asc", text: "Price: Low to High"},
+    {key: "price-desc", text: "Price: High to Low"},
+    {key: "rating", text: "Rating"},
+];
+
 
 function Index() {
     const {data, isError, isLoading} = useGetProductsQuery();
@@ -41,7 +49,7 @@ function Index() {
         <h1>Catalog</h1>
         <div className="flex justify-between items-center mb-4">
             <AccentButton onClick={() => setProductCreateModalActive(true)}>Add product</AccentButton>
-            <Sort onSortChange={onChangeSorting}/>
+            <Select options={sortingParams} onOptionChange={onChangeSorting}/>
         </div>
         <div className="grid grid-cols-4 gap-4 h-full">
             {sortedData.map((product) => (<ProductCard key={product.id} product={product}/>))}

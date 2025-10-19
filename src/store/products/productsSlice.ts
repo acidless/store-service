@@ -14,10 +14,12 @@ export type Product = {
 
 export type ProductsState = {
     products: Product[];
+    categories: string[];
 }
 
 const initialState: ProductsState = {
-    products: []
+    products: [],
+    categories: []
 };
 
 export const productsSlice = createSlice({

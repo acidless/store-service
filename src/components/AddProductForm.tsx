@@ -3,10 +3,11 @@ import AccentButton from "./Buttons/AccentButton.tsx";
 import SecondaryButton from "./Buttons/SecondaryButton.tsx";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {useAddProductMutation} from "../store/products/productsAPI.ts";
+import {useAddProductMutation, useGetCategoriesQuery} from "../store/products/productsAPI.ts";
 import Loader from "./Loader/Loader.tsx";
 import {useContext, useEffect} from "react";
-import ErrorContext from "./context.tsx";
+import ErrorContext from "../context.tsx";
+import Select from "./Select.tsx";
 
 type Inputs = {
     title: string;
@@ -35,9 +36,12 @@ const AddProductForm = function ({onCancel, onSuccess}: Props) {
     const {
         register,
         handleSubmit,
+        setValue,
+        getValues,
         formState: {errors},
     } = useForm<Inputs>({resolver: yupResolver(schema)});
 
+    const {data} = useGetCategoriesQuery();
     const [addProduct, result] = useAddProductMutation();
     const {setError} = useContext(ErrorContext);
 
@@ -46,16 +50,26 @@ const AddProductForm = function ({onCancel, onSuccess}: Props) {
     }
 
     useEffect(() => {
-        if(result.isSuccess) {
+        if (result.isSuccess) {
             onSuccess();
         }
     }, [result.isSuccess]);
 
     useEffect(() => {
-        if(result.isError) {
+        if (result.isError) {
             setError("There was an error while creating new product")
         }
     }, [result.isError]);
+
+    useEffect(() => {
+        if (data && !getValues().category) {
+            setValue("category", data[0]);
+        }
+    }, [data]);
+
+    function onCategoryChange(category: string) {
+        setValue("category", category);
+    }
 
     return <div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -85,8 +99,8 @@ const AddProductForm = function ({onCancel, onSuccess}: Props) {
             </div>
             <div className="flex flex-col mb-8 text-base">
                 <label className="mb-1" htmlFor="category">Category</label>
-                <input className="border-1 border-gray-300 py-1 px-2 rounded-md" id="category" {...register(
-                    "category")}/>
+                <Select align="left" onOptionChange={onCategoryChange}
+                        options={data ? data.map((category) => ({key: category.toLowerCase(), text: category})) : []}/>
                 <p className="mt-1 text-red-500 text-sm">{errors.category?.message}</p>
             </div>
             <div className="flex items-stretch gap-2">
