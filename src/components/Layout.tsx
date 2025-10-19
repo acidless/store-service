@@ -1,6 +1,11 @@
 import {Outlet} from "react-router";
+import ErrorPopup from "./ErrorPopup.tsx";
+import {useContext} from "react";
+import ErrorContext from "./context.tsx";
 
 function Layout() {
+    const {error} = useContext(ErrorContext);
+
     return <div className="flex flex-col min-h-[100vh]">
         <header>
 
@@ -11,6 +16,7 @@ function Layout() {
         <footer>
 
         </footer>
+        <ErrorPopup error={error}/>
     </div>;
 }
 

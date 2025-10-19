@@ -5,7 +5,8 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useAddProductMutation} from "../store/products/productsAPI.ts";
 import Loader from "./Loader/Loader.tsx";
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
+import ErrorContext from "./context.tsx";
 
 type Inputs = {
     title: string;
@@ -38,14 +39,23 @@ const AddProductForm = function ({onCancel, onSuccess}: Props) {
     } = useForm<Inputs>({resolver: yupResolver(schema)});
 
     const [addProduct, result] = useAddProductMutation();
+    const {setError} = useContext(ErrorContext);
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         addProduct(data);
     }
 
     useEffect(() => {
-        onSuccess();
+        if(result.isSuccess) {
+            onSuccess();
+        }
     }, [result.isSuccess]);
+
+    useEffect(() => {
+        if(result.isError) {
+            setError("There was an error while creating new product")
+        }
+    }, [result.isError]);
 
     return <div>
         <form onSubmit={handleSubmit(onSubmit)}>
