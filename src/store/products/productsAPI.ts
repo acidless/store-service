@@ -1,5 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import type {Product} from "./productsSlice.ts";
+import {type Product, setProducts} from "./productsSlice.ts";
+import type {State} from "../store.ts";
 
 function capitalize(str: string) {
     return str[0].toUpperCase() + str.slice(1);
@@ -43,7 +44,7 @@ export const productsAPI = createApi({
                 body: product
             }),
 
-            async onQueryStarted(_, {dispatch, queryFulfilled}) {
+            async onQueryStarted(_, {dispatch, queryFulfilled, getState}) {
                 try {
                     const {data: createdProduct} = await queryFulfilled;
 
@@ -55,6 +56,9 @@ export const productsAPI = createApi({
                             }
                         )
                     );
+
+                    const state = (getState() as State);
+                    dispatch(setProducts([...state.products.products, createdProduct]));
                 } catch (e) {
                     console.error(e);
                 }
