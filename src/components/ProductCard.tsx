@@ -17,12 +17,14 @@ const ProductCard = function ({product}: Props) {
         </div>
         <div className="flex items-center justify-between">
             <p className="text-xl font-semibold">${product.price}</p>
-            <div className="flex items-center">
-                <p className="text-lg mr-2">{product.rating.rate}</p>
-                <div className="w-7 h-7 p-1.5 rounded-sm bg-amber-500 select-none">
-                    <img src="/star.svg" alt=""/>
-                </div>
-            </div>
+            {product.rating
+                ?   <div className="flex items-center">
+                        <p className="text-lg mr-2">{product.rating.rate}</p>
+                        <div className="w-7 h-7 p-1.5 rounded-sm bg-amber-500 select-none">
+                            <img src="/star.svg" alt=""/>
+                        </div>
+                    </div>
+                : ""}
         </div>
     </div>;
 }

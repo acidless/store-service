@@ -16,6 +16,9 @@ function Index() {
 
     const [productCreateModalActive, setProductCreateModalActive] = useState(false);
 
+    function closeModal() {
+        setProductCreateModalActive(false);
+    }
 
     function onChangeSorting(newKey: string) {
         setSortKey(newKey);
@@ -39,7 +42,7 @@ function Index() {
             {sortedData.map((product) => (<ProductCard key={product.id} product={product}/>))}
         </div>
         <ModalWindow isOpened={productCreateModalActive} setOpened={setProductCreateModalActive}>
-            <AddProductForm onCancel={() => setProductCreateModalActive(false)}/>
+            <AddProductForm onCancel={closeModal} onSuccess={closeModal}/>
         </ModalWindow>
     </section>
 }

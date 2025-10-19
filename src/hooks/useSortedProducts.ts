@@ -19,7 +19,7 @@ function useSortedProducts(data: Product[] | undefined, sort: string) {
                 compareFn = (a, b) => b.price - a.price;
                 break;
             case "rating":
-                compareFn = (a, b) => b.rating.rate - a.rating.rate;
+                compareFn = (a, b) => (b.rating?.rate || 0) - (a.rating?.rate || 0);
                 break;
         }
 
