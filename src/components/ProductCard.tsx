@@ -1,5 +1,6 @@
 import type {Product} from "../store/products/productsSlice.ts";
 import {Link} from "react-router";
+import ProductRating from "./ProductRating.tsx";
 
 type Props = {
     product: Product;
@@ -22,14 +23,7 @@ const ProductCard = function ({product}: Props) {
         </div>
         <div className="flex items-center justify-between">
             <p className="text-xl font-semibold">${product.price}</p>
-            {product.rating
-                ? <div className="flex items-center">
-                    <p className="text-lg mr-2">{product.rating.rate}</p>
-                    <div className="w-7 h-7 p-1.5 rounded-sm bg-amber-500 select-none">
-                        <img src="/star.svg" alt=""/>
-                    </div>
-                </div>
-                : ""}
+            <ProductRating rating={product.rating?.rate}/>
         </div>
     </div>;
 }

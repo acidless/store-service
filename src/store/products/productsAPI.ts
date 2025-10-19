@@ -1,6 +1,10 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import type {Product} from "./productsSlice.ts";
 
+function capitalize(str: string) {
+    return str[0].toUpperCase() + str.slice(1);
+}
+
 export const productsAPI = createApi({
     reducerPath: "productsAPI",
     baseQuery: fetchBaseQuery({
@@ -12,15 +16,23 @@ export const productsAPI = createApi({
             transformResponse: (response: Product[]) => {
                 return response.map((item) => ({
                     ...item,
-                    category: item.category[0].toUpperCase() + item.category.slice(1)
+                    category: capitalize(item.category)
                 }));
+            },
+        }),
+
+        getProduct: builder.query<Product, string>({
+            query: (id: string) => `products/${id}`,
+            transformResponse: (response: Product) => {
+                response.category = capitalize(response.category);
+                return response;
             },
         }),
 
         getCategories: builder.query<string[], void>({
             query: () => "products/categories",
             transformResponse: (response: string[]) => {
-                return response.map((item) => item[0].toUpperCase() + item.slice(1));
+                return response.map((item) => capitalize(item));
             },
         }),
 
@@ -51,4 +63,4 @@ export const productsAPI = createApi({
     })
 });
 
-export const {useGetProductsQuery, useGetCategoriesQuery, useAddProductMutation} = productsAPI;
+export const {useGetProductsQuery, useGetCategoriesQuery, useGetProductQuery, useAddProductMutation} = productsAPI;
