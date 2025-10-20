@@ -7,9 +7,11 @@ import type {State} from "../store/store.ts";
 import {useState} from "react";
 import ModalWindow from "../components/ModalWindow.tsx";
 import DeleteProduct from "../components/DeleteProduct.tsx";
+import EditProductForm from "../components/EditProductForm.tsx";
 
 function Product() {
     const [isDeleteProductModalActive, setDeleteProductModalActive] = useState(false);
+    const [isEditProductModalActive, setEditProductModalActive] = useState(false);
     const {id} = useParams();
 
     const localProduct = useSelector((state: State) =>
@@ -36,7 +38,8 @@ function Product() {
         </div>
         <div className="col-span-8">
             <div className="flex justify-start gap-1 mb-2">
-                <button className="cursor-pointer hover:rotate-12 transition-all duration-300"
+                <button onClick={() => setEditProductModalActive(true)}
+                        className="cursor-pointer hover:rotate-12 transition-all duration-300"
                         aria-label="Edit product">
                     <img className="w-6" src="/edit.svg" alt=""/>
                 </button>
@@ -60,6 +63,10 @@ function Product() {
                 <ProductRating rating={product.rating?.rate}/>
             </div>
         </div>
+        <ModalWindow isOpened={isEditProductModalActive} setOpened={setEditProductModalActive}>
+            <EditProductForm title="Edit product" product={product} isLoading={false} onCancel={() => setDeleteProductModalActive(false)}
+                             onSubmit={() => setDeleteProductModalActive(false)}/>
+        </ModalWindow>
         <ModalWindow isOpened={isDeleteProductModalActive} setOpened={setDeleteProductModalActive}>
             <DeleteProduct onCancel={() => setDeleteProductModalActive(false)}
                            onDelete={() => setDeleteProductModalActive(false)}/>

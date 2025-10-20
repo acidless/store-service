@@ -1,11 +1,11 @@
-import {useGetProductsQuery} from "../store/products/productsAPI.ts";
+import {useAddProductMutation, useGetProductsQuery} from "../store/products/productsAPI.ts";
 import Loader from "../components/Loader/Loader.tsx";
 import ProductCard from "../components/ProductCard.tsx";
 import useSortedProducts from "../hooks/useSortedProducts.ts";
 import {useContext, useEffect, useState} from "react";
 import AccentButton from "../components/Buttons/AccentButton.tsx";
 import ModalWindow from "../components/ModalWindow.tsx";
-import AddProductForm from "../components/AddProductForm.tsx";
+import EditProductForm from "../components/EditProductForm.tsx";
 import ErrorContext from "../context.tsx";
 import Select from "../components/Select.tsx";
 
@@ -19,6 +19,7 @@ const sortingParams = [
 
 function Index() {
     const {data, isError, isLoading} = useGetProductsQuery();
+    const [addProduct, addResult] = useAddProductMutation();
 
     const {setError} = useContext(ErrorContext);
 
@@ -32,6 +33,18 @@ function Index() {
             setError("There was an error while fetching products");
         }
     }, [isError]);
+
+    useEffect(() => {
+        if (addResult.isSuccess) {
+            closeModal();
+        }
+    }, [addResult.isSuccess]);
+
+    useEffect(() => {
+        if (addResult.isError) {
+            setError("There was an error while creating new product")
+        }
+    }, [addResult.isError]);
 
     function closeModal() {
         setProductCreateModalActive(false);
@@ -57,7 +70,7 @@ function Index() {
             {sortedData.map((product) => (<ProductCard key={product.id} product={product}/>))}
         </div>
         <ModalWindow isOpened={productCreateModalActive} setOpened={setProductCreateModalActive}>
-            <AddProductForm onCancel={closeModal} onSuccess={closeModal}/>
+            <EditProductForm title="Add product" isLoading={addResult.isLoading} onCancel={closeModal} onSubmit={addProduct}/>
         </ModalWindow>
     </section>
 }
