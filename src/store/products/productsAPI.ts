@@ -65,6 +65,54 @@ export const productsAPI = createApi({
             },
         }),
 
+        updateProduct: builder.mutation<Product, { id: string, product: Partial<Product> }>({
+            query: ({id, product}) => ({
+                url: `products/${id}`,
+                method: "PUT",
+                body: product
+            }),
+
+            async onQueryStarted(_, {dispatch, queryFulfilled, getState}) {
+                try {
+                    const {data: updatedProduct} = await queryFulfilled;
+
+                    dispatch(productsAPI.util.updateQueryData(
+                            "getProducts",
+                            undefined,
+                            (draft) => {
+                                const originalIdx = draft.findIndex(p => p.id === updatedProduct.id);
+                                const original = JSON.parse(JSON.stringify(draft[originalIdx]));
+                                draft.splice(originalIdx, 1,
+                                    {...original, ...updatedProduct, category: capitalize(updatedProduct.category)});
+                            }
+                        )
+                    );
+
+                    dispatch(productsAPI.util.updateQueryData(
+                            "getProduct",
+                            updatedProduct.id.toString(),
+                            (draft) => {
+                                Object.assign(draft, {...updatedProduct, category: capitalize(updatedProduct.category)});
+                            }
+                        )
+                    );
+
+
+                    const state = (getState() as State);
+                    const originalIdx = state.products.products.findIndex(p => p.id === updatedProduct.id);
+                    if (originalIdx !== -1) {
+                        const original = state.products.products[originalIdx];
+                        const newProducts = [...state.products.products];
+                        newProducts.splice(originalIdx, 1, {...original, ...updatedProduct, category: capitalize(updatedProduct.category)});
+
+                        dispatch(setProducts(newProducts));
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+        }),
+
         deleteProduct: builder.mutation<void, string>({
             query: (id) => ({
                 url: `products/${id}`,
@@ -79,5 +127,6 @@ export const {
     useGetCategoriesQuery,
     useGetProductQuery,
     useAddProductMutation,
+    useUpdateProductMutation,
     useDeleteProductMutation
 } = productsAPI;

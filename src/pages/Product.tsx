@@ -1,13 +1,14 @@
-import {useGetProductQuery} from "../store/products/productsAPI.ts";
+import {useGetProductQuery, useUpdateProductMutation} from "../store/products/productsAPI.ts";
 import {useParams} from "react-router";
 import Loader from "../components/Loader/Loader.tsx";
 import ProductRating from "../components/ProductRating.tsx";
 import {useSelector} from "react-redux";
 import type {State} from "../store/store.ts";
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import ModalWindow from "../components/ModalWindow.tsx";
 import DeleteProduct from "../components/DeleteProduct.tsx";
 import EditProductForm from "../components/EditProductForm.tsx";
+import ErrorContext from "../context.tsx";
 
 function Product() {
     const [isDeleteProductModalActive, setDeleteProductModalActive] = useState(false);
@@ -17,10 +18,24 @@ function Product() {
     const localProduct = useSelector((state: State) =>
         state.products.products.find((p) => String(p.id) === id)
     );
+    const {setError} = useContext(ErrorContext);
+    const [updateProduct, updateResult] = useUpdateProductMutation();
     const {data, isLoading} = useGetProductQuery(id!, {
         skip: !!localProduct,
     });
     const product = localProduct || data;
+
+    useEffect(() => {
+        if (updateResult.isError) {
+            setError("There was an error while updating product");
+        }
+    }, [updateResult.isError]);
+
+    useEffect(() => {
+        if (updateResult.isSuccess) {
+            setEditProductModalActive(false);
+        }
+    }, [updateResult.isSuccess]);
 
     if (isLoading) {
         return <Loader/>;
@@ -64,8 +79,9 @@ function Product() {
             </div>
         </div>
         <ModalWindow isOpened={isEditProductModalActive} setOpened={setEditProductModalActive}>
-            <EditProductForm title="Edit product" product={product} isLoading={false} onCancel={() => setDeleteProductModalActive(false)}
-                             onSubmit={() => setDeleteProductModalActive(false)}/>
+            <EditProductForm title="Edit product" product={product} isLoading={false}
+                             onCancel={() => setDeleteProductModalActive(false)}
+                             onSubmit={(data) => updateProduct({id: id!, product: data})}/>
         </ModalWindow>
         <ModalWindow isOpened={isDeleteProductModalActive} setOpened={setDeleteProductModalActive}>
             <DeleteProduct onCancel={() => setDeleteProductModalActive(false)}

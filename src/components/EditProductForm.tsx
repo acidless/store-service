@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useGetCategoriesQuery} from "../store/products/productsAPI.ts";
 import Loader from "./Loader/Loader.tsx";
-import {useEffect} from "react";
+import {useEffect, useMemo} from "react";
 import Select from "./Select.tsx";
 import type {Product} from "../store/products/productsSlice.ts";
 
@@ -28,7 +28,7 @@ type Props = {
 const schema = yup
     .object({
         title: yup.string().required().min(3).max(256),
-        price: yup.number().typeError("should be a number").required().min(0),
+        price: yup.number().round("round").typeError("should be a number").required().min(0),
         description: yup.string().required().max(4096),
         category: yup.string().required(),
         image: yup.string().required(),
@@ -46,11 +46,15 @@ const EditProductForm = function ({title, onCancel, onSubmit, product, isLoading
 
     const {data} = useGetCategoriesQuery();
 
+    const options = useMemo(() => {
+        return data ? data.map((category) => ({key: category.toLowerCase(), text: category})) : [];
+    }, [data]);
+
     useEffect(() => {
         if (data && !getValues().category) {
-            setValue("category", product?.category.toLowerCase() || data[0]);
+            setValue("category", product?.category || data[0]);
         }
-    }, [data]);
+    }, [data, product]);
 
     function onCategoryChange(category: string) {
         setValue("category", category);
@@ -67,7 +71,7 @@ const EditProductForm = function ({title, onCancel, onSubmit, product, isLoading
             </div>
             <div className="flex flex-col mb-2 text-base">
                 <label className="mb-1" htmlFor="price">Price</label>
-                <input className="border-1 border-gray-300 py-1 px-2 rounded-md" id="price" type="number" {...register(
+                <input className="border-1 border-gray-300 py-1 px-2 rounded-md" id="price" type="number" step="0.01" {...register(
                     "price", {value: product?.price})}/>
                 <p className="mt-1 text-red-500 text-sm">{errors.price?.message}</p>
             </div>
@@ -85,7 +89,7 @@ const EditProductForm = function ({title, onCancel, onSubmit, product, isLoading
             <div className="flex flex-col mb-8 text-base">
                 <label className="mb-1" htmlFor="category">Category</label>
                 <Select align="left" onOptionChange={onCategoryChange}
-                        options={data ? data.map((category) => ({key: category.toLowerCase(), text: category})) : []}/>
+                        options={options} defaultOption={product?.category ? options.findIndex(o => o.text === product?.category) : 0}/>
                 <p className="mt-1 text-red-500 text-sm">{errors.category?.message}</p>
             </div>
             <div className="flex items-stretch gap-2">

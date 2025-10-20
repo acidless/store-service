@@ -2,12 +2,13 @@ import {useEffect, useRef, useState} from "react";
 
 type Props = {
     onOptionChange: (key: string) => void;
+    defaultOption?: number;
     options: { key: string, text: string }[];
     align?: "left" | "right";
 }
 
-const Select = function ({options, onOptionChange, align = "right"}: Props) {
-    const [currentOption, setCurrentOption] = useState(0);
+const Select = function ({options, onOptionChange, defaultOption = 0, align = "right"}: Props) {
+    const [currentOption, setCurrentOption] = useState(defaultOption >= 0 ? defaultOption : 0);
     const [isActive, setActive] = useState(false);
     const currentElem = useRef<HTMLDivElement>(null);
 
@@ -18,6 +19,12 @@ const Select = function ({options, onOptionChange, align = "right"}: Props) {
             document.removeEventListener('click', onDocumentClick);
         }
     }, []);
+
+    useEffect(() => {
+        if(defaultOption >= 0) {
+            selectOption(defaultOption);
+        }
+    }, [defaultOption]);
 
     function onDocumentClick(e: Event) {
         if (currentElem.current && !currentElem.current.contains(e.target as Node)) {
@@ -30,9 +37,11 @@ const Select = function ({options, onOptionChange, align = "right"}: Props) {
     }
 
     function selectOption(idx: number) {
-        setCurrentOption(idx);
-        setActive(false);
-        onOptionChange(options[idx].key);
+        if(options.length) {
+            setCurrentOption(idx);
+            setActive(false);
+            onOptionChange(options[idx].key);
+        }
     }
 
     if (!options.length) {
