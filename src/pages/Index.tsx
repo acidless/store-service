@@ -46,7 +46,9 @@ function Index() {
     }
 
     return <section className="flex-1">
-        <h1>Catalog</h1>
+        <div className="mb-4">
+            <h1 className="text-3xl font-semibold">Catalog</h1>
+        </div>
         <div className="flex justify-between items-center mb-4">
             <AccentButton onClick={() => setProductCreateModalActive(true)}>Add product</AccentButton>
             <Select options={sortingParams} onOptionChange={onChangeSorting}/>

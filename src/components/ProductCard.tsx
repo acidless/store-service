@@ -7,7 +7,7 @@ type Props = {
 }
 
 const ProductCard = function ({product}: Props) {
-    return <div className="border-1 border-gray-300 p-4 rounded-xl flex flex-col">
+    return <div className="border-1 border-gray-300 p-4 rounded-xl flex flex-col hover:shadow-lg transition-all duration-300">
         <div className="h-48 mb-4">
             <Link className="h-full w-full flex justify-center items-center" to={`/products/${product.id}`}>
                 <img className="h-full w-auto select-none" src={product.image} alt={product.title}/>
