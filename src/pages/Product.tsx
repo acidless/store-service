@@ -47,11 +47,11 @@ function Product() {
         </section>;
     }
 
-    return <section className="grid grid-cols-12 gap-8">
-        <div className="col-span-4">
+    return <section className="grid grid-cols-1 justify-items-center md:grid-cols-12 gap-8">
+        <div className="md:col-span-4">
             <img src={product.image} alt={product.title}/>
         </div>
-        <div className="col-span-8">
+        <div className="md:col-span-8">
             <div className="flex justify-start gap-1 mb-2">
                 <button onClick={() => setEditProductModalActive(true)}
                         className="cursor-pointer hover:rotate-12 transition-all duration-300"
@@ -65,14 +65,14 @@ function Product() {
                 </button>
             </div>
             <div className="mb-2">
-                <h1 className="text-4xl font-semibold mb-1">{product.title}</h1>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-1">{product.title}</h1>
                 <p className="text-neutral-500">{product.category}</p>
             </div>
             <div className="mb-6">
-                <p className="text-3xl font-semibold">${product.price}</p>
+                <p className="text-2xl md:text-3xl font-semibold">${product.price}</p>
             </div>
             <div className="mb-6">
-                <p className="text-lg text-neutral-500">{product.description}</p>
+                <p className="text-base md:text-lg text-neutral-500">{product.description}</p>
             </div>
             <div>
                 <ProductRating rating={product.rating?.rate}/>

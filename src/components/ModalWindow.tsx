@@ -25,10 +25,10 @@ const ModalWindow = function ({isOpened, setOpened, children}: Props) {
     }
 
     return <div onMouseDown={onMouseDown} onMouseUp={onMouseUp}
-                className={`fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black/70 transition-opacity duration-300 ${isOpened ?
+                className={`fixed top-0 left-0 w-full h-full px-4 flex justify-center items-center bg-black/70 transition-opacity duration-300 ${isOpened ?
                     'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
         <div ref={modalBlockRef}
-             className={`bg-white p-4 md:p-6 rounded-xl min-w-[300px] md:min-w-[500px] transition-transform duration-300 ${isOpened ?
+             className={`bg-white p-4 md:p-6 rounded-xl w-full sm:w-auto min-w-[300px] md:min-w-[500px] transition-transform duration-300 ${isOpened ?
                  '-translate-y-0' : '-translate-y-1/3'}`}>
             {children}
         </div>

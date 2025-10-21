@@ -59,14 +59,11 @@ function Index() {
     }
 
     return <section className="flex-1">
-        <div className="mb-4">
-            <h1 className="text-3xl font-semibold">Catalog</h1>
-        </div>
         <div className="flex justify-between items-center mb-4">
             <AccentButton onClick={() => setProductCreateModalActive(true)}>Add product</AccentButton>
             <Select options={sortingParams} onOptionChange={onChangeSorting}/>
         </div>
-        <div className="grid grid-cols-4 gap-4 h-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full">
             {sortedData.map((product) => (<ProductCard key={product.id} product={product}/>))}
         </div>
         <ModalWindow isOpened={productCreateModalActive} setOpened={setProductCreateModalActive}>
