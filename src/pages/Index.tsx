@@ -63,11 +63,18 @@ function Index() {
             <AccentButton onClick={() => setProductCreateModalActive(true)}>Add product</AccentButton>
             <Select options={sortingParams} onOptionChange={onChangeSorting}/>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full">
-            {sortedData.map((product) => (<ProductCard key={product.id} product={product}/>))}
-        </div>
+        {sortedData.length
+            ? <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full">
+                {sortedData.map((product) => (<ProductCard key={product.id} product={product}/>))}
+            </div>
+
+            : <div>
+                <p className="text-center font-semibold mt-16 text-2xl">No products found</p>
+            </div>
+        }
         <ModalWindow isOpened={productCreateModalActive} setOpened={setProductCreateModalActive}>
-            <EditProductForm title="Add product" isLoading={addResult.isLoading} onCancel={closeModal} onSubmit={addProduct}/>
+            <EditProductForm title="Add product" isLoading={addResult.isLoading} onCancel={closeModal}
+                             onSubmit={addProduct}/>
         </ModalWindow>
     </section>
 }

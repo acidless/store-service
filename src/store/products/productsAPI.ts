@@ -2,39 +2,22 @@ import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {type Product, setProducts} from "./productsSlice.ts";
 import type {State} from "../store.ts";
 
-function capitalize(str: string) {
-    return str[0].toUpperCase() + str.slice(1);
-}
-
 export const productsAPI = createApi({
     reducerPath: "productsAPI",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://fakestoreapi.com/"
+        baseUrl: "http://localhost:3000/"
     }),
     endpoints: (builder) => ({
         getProducts: builder.query<Product[], void>({
             query: () => "products",
-            transformResponse: (response: Product[]) => {
-                return response.map((item) => ({
-                    ...item,
-                    category: capitalize(item.category)
-                }));
-            },
         }),
 
         getProduct: builder.query<Product, string>({
             query: (id: string) => `products/${id}`,
-            transformResponse: (response: Product) => {
-                response.category = capitalize(response.category);
-                return response;
-            },
         }),
 
         getCategories: builder.query<string[], void>({
             query: () => "products/categories",
-            transformResponse: (response: string[]) => {
-                return response.map((item) => capitalize(item));
-            },
         }),
 
         addProduct: builder.mutation<Product, Partial<Product>>({
@@ -83,7 +66,7 @@ export const productsAPI = createApi({
                                 const originalIdx = draft.findIndex(p => p.id === updatedProduct.id);
                                 const original = JSON.parse(JSON.stringify(draft[originalIdx]));
                                 draft.splice(originalIdx, 1,
-                                    {...original, ...updatedProduct, category: capitalize(updatedProduct.category)});
+                                    {...original, ...updatedProduct});
                             }
                         )
                     );
@@ -92,18 +75,17 @@ export const productsAPI = createApi({
                             "getProduct",
                             updatedProduct.id.toString(),
                             (draft) => {
-                                Object.assign(draft, {...updatedProduct, category: capitalize(updatedProduct.category)});
+                                Object.assign(draft, {...updatedProduct});
                             }
                         )
                     );
-
 
                     const state = (getState() as State);
                     const originalIdx = state.products.products.findIndex(p => p.id === updatedProduct.id);
                     if (originalIdx !== -1) {
                         const original = state.products.products[originalIdx];
                         const newProducts = [...state.products.products];
-                        newProducts.splice(originalIdx, 1, {...original, ...updatedProduct, category: capitalize(updatedProduct.category)});
+                        newProducts.splice(originalIdx, 1, {...original, ...updatedProduct});
 
                         dispatch(setProducts(newProducts));
                     }

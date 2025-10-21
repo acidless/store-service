@@ -1,5 +1,5 @@
 import {useGetProductQuery, useUpdateProductMutation} from "../store/products/productsAPI.ts";
-import {useParams, useNavigate} from "react-router";
+import {useParams, useNavigate, Navigate} from "react-router";
 import Loader from "../components/Loader/Loader.tsx";
 import ProductRating from "../components/ProductRating.tsx";
 import {useSelector} from "react-redux";
@@ -47,9 +47,7 @@ function Product() {
     }
 
     if (!product) {
-        return <section>
-            <p>Product not found</p>
-        </section>;
+        return <Navigate to="/404" replace />;
     }
 
     return <section className="grid grid-cols-1 justify-items-center md:grid-cols-12 gap-8">
