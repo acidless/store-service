@@ -1,5 +1,5 @@
 import {useGetProductQuery, useUpdateProductMutation} from "../store/products/productsAPI.ts";
-import {useParams} from "react-router";
+import {useParams, useNavigate} from "react-router";
 import Loader from "../components/Loader/Loader.tsx";
 import ProductRating from "../components/ProductRating.tsx";
 import {useSelector} from "react-redux";
@@ -18,6 +18,7 @@ function Product() {
     const localProduct = useSelector((state: State) =>
         state.products.products.find((p) => String(p.id) === id)
     );
+    const navigate = useNavigate();
     const {setError} = useContext(ErrorContext);
     const [updateProduct, updateResult] = useUpdateProductMutation();
     const {data, isLoading} = useGetProductQuery(id!, {
@@ -36,6 +37,10 @@ function Product() {
             setEditProductModalActive(false);
         }
     }, [updateResult.isSuccess]);
+
+    function onSuccessfulDelete() {
+        navigate("/");
+    }
 
     if (isLoading) {
         return <Loader/>;
@@ -85,7 +90,7 @@ function Product() {
         </ModalWindow>
         <ModalWindow isOpened={isDeleteProductModalActive} setOpened={setDeleteProductModalActive}>
             <DeleteProduct onCancel={() => setDeleteProductModalActive(false)}
-                           onDelete={() => setDeleteProductModalActive(false)}/>
+                           onDelete={onSuccessfulDelete}/>
         </ModalWindow>
     </section>
 }

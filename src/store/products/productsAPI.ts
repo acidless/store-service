@@ -117,7 +117,28 @@ export const productsAPI = createApi({
             query: (id) => ({
                 url: `products/${id}`,
                 method: "DELETE"
-            })
+            }),
+
+            async onQueryStarted(_, {dispatch, queryFulfilled, getState}) {
+                try {
+                    const {meta} = await queryFulfilled;
+                    const id = parseInt(meta!.request.url.split("/").pop()!);
+
+                    dispatch(productsAPI.util.updateQueryData(
+                            "getProducts",
+                            undefined,
+                            (draft) => {
+                                draft.splice(draft.findIndex(p => p.id === id), 1);
+                            }
+                        )
+                    );
+
+                    const state = (getState() as State);
+                    dispatch(setProducts([...state.products.products.filter(p => p.id !== id)]));
+                } catch (e) {
+                    console.error(e);
+                }
+            },
         })
     })
 });
